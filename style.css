@@ -36,3 +36,9 @@ a.input-group-text{
 .vs__actions{
     cursor: pointer;
 }
+#footer{
+    position: absolute;
+    bottom: 10px;
+    z-index: 19909;
+    width: 100%;
+}
