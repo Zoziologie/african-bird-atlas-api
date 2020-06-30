@@ -1,0 +1,25 @@
+{
+	"R": {
+		"items":["date","region","filter"],
+		"parms":["format","first"],
+		"map": true
+		},
+	"summary":{
+		"items":["species","region"],
+		"parms":["format"],
+		"map": true
+		},
+	"coverage":{
+		"items":["region"],
+		"parms":["format","first"],
+		"map": false
+		},
+	"card":{
+		"items":["cardNo"],
+		"map": true
+		},
+	"cards":{
+		"items":["species"],
+		"map": true
+	}
+}
