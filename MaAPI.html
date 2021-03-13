@@ -1,0 +1,116 @@
+---
+layout: blank
+permalink: /map-african-bird-atlas-api/
+title: "Map African Bird Atlas API"
+
+plugins: 
+- token
+- jQuery
+- Leaflet
+- Bootstrap
+- font-awesome
+- map-african-bird-atlas-api
+- no_default_script
+- vuejs
+- bootstrap-vue
+- vue-select
+- Vue2Leaflet
+---
+<b-container fluid id="ff">
+	<b-row>
+		<b-col>
+			<b-input-group id="url-group" class="mb-3 mt-3">
+				<b-input-group-prepend class="url-innertext">
+					<b-button variant="outline-secondary"  onclick="window.open('http://api.adu.org.za/sabap2/v2/');">
+						<i class="fas fa-info"></i>
+					</b-button>
+					<!--<b-button variant="outline-secondary" v-b-toggle.sidebar-1><i class="fas fa-wrench"></i></b-button>-->
+					<b-input-group-text variant="outline-secondary">http://api.adu.org.za/sabap2/v2/</b-input-group-text>
+				</b-input-group-prepend>
+				<b-form-select v-model="base" :options="base_opts" required class="url-val"></b-form-select>
+				<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">/</b-input-group-text></b-input-group-prepend>
+				<template v-for="item in clayer.items">
+					<template v-if="item === 'date'">
+						<b-form-input  v-model="startdate" type="date" required class="url-val"></b-form-input>
+						<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">/</b-input-group-text></b-input-group-prepend>
+						<b-form-input  v-model="enddate" type="date" required class="url-val"></b-form-input>
+						<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">/</b-input-group-text></b-input-group-prepend>
+					</template>
+					<template v-else-if="item === 'region'">
+						<b-form-select v-model="regionType" :options="base=='R' ? regions : regions_opt" required class="url-val"></b-form-select>
+						<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">/</b-input-group-text></b-input-group-prepend>
+						<template v-if="regionType === 'country'">
+							<b-form-select class="url-val" v-model="regionCountry" :options="countries" required></b-form-select>
+						</template>
+						<template v-else-if="regionType === 'province'">
+							<b-form-input v-model="regionProvince" type="text" required class="url-val"></b-form-input>
+						</template>
+						<template v-else-if="regionType === 'pentad'">
+							<b-form-input v-model="regionPentad" type="text" class="url-val" required></b-form-input>
+							<b-input-group-prepend class="url-pass">
+								<b-button  variant="outline-secondary"  :pressed.sync="displayMarkerPentad" >
+									<i class="fas fa-marker"></i>
+								</b-button>
+							</b-input-group-prepend>
+						</template>
+						<template v-else-if="regionType === 'group'">
+							<v-select v-model="regionGroup" label="label" :options="groups" :reduce="e => e.code" required class="url-species"></v-select>
+						</template>
+						<template v-else-if="regionType === 'qdgc'">
+							<b-form-input v-model="regionQdgc" type="text" required class="url-val"></b-form-input>
+						</template>
+						<template v-if="base!='summary'">
+							<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary" >/data</b-input-group-text></b-input-group-prepend>
+						</template>
+					</template>
+					<template v-else-if="item === 'filter'">
+						<b-form-select v-model="filterType" :options="['','/observer','/species']" required class="url-val"></b-form-select>
+						<template v-if="filterType === '/observer'">
+							<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">/</b-input-group-text></b-input-group-prepend>
+							<b-form-input v-model="filterObserver" type="text" required class="url-val"></b-form-input>
+						</template>
+						<template v-else-if="filterType === '/species'">
+							<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">/</b-input-group-text></b-input-group-prepend>
+							<v-select taggable multiple v-model="speciesCode" label="label" :options="species" :reduce="e => e.code" required class="url-species"></v-select>
+						</template>
+					</template>
+					<template v-else-if="item === 'species'">
+						<template v-if="base=='cards'">
+							<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">species/0/</b-input-group-text></b-input-group-prepend>
+						</template>
+						<template v-else>
+							<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">species/</b-input-group-text></b-input-group-prepend>
+						</template>
+						<v-select taggable multiple v-model="speciesCode" label="label" :options="species" :reduce="e => e.code" required class="url-species"></v-select>
+						<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">/</b-input-group-text></b-input-group-prepend>
+					</template>
+					<template v-else-if="item === 'cardNo'">
+						<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">full/0/</b-input-group-text></b-input-group-prepend>
+						<b-form-input v-model="cardNo" type="text" required class="url-val"></b-form-input>
+					</template>
+				</template>
+				<b-input-group-append>
+					<b-button variant="outline-secondary" v-on:click="exportURL('map',$event)" ><i class="fas fa-globe-africa"></i> Map</b-button>
+					<b-dropdown variant="outline-secondary">
+						<template v-slot:button-content>
+							<i class='fas fa-download'></i> Download
+						</template>
+						<b-dropdown-item v-on:click="exportURL('toJSON',$event)">JSON</b-dropdown-item>
+						<b-dropdown-item v-on:click="exportURL('toCSV',$event)">CSV</b-dropdown-item>
+					</b-dropdown>
+				</b-input-group-append>
+			</b-input-group>
+		</b-col>
+	</b-row>
+	<b-row class="h-100">
+		<b-col class="h-100">
+			<l-map :bounds="bounds">
+				<l-tile-layer :url="lurl"></l-tile-layer>
+				<l-marker :lat-lng.sync="marker_pentad.position" :draggable="true" :visible="displayMarkerPentad"></l-marker>
+				<l-rectangle :bounds="rectangle_pentad" :visible="displayMarkerPentad"></l-rectangle>
+			</l-map>
+		</b-col>
+	</b-row>
+</b-container>
+
+
