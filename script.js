@@ -44,8 +44,8 @@ function latlng2pentad(lat, lng) {
 	lng = Math.abs(lng + 0.0001);
 	var latDeg = Math.floor(lat);
 	var lngDeg = Math.floor(lng);
-	var latSec = Math.floor((lat-latDeg)*60/5)*5
-	var lngSec = Math.floor((lng-lngDeg)*60/5)*5
+	var latSec = Math.floor((lat - latDeg) * 60 / 5) * 5
+	var lngSec = Math.floor((lng - lngDeg) * 60 / 5) * 5
 	var latstr = String(latDeg).padStart(2, '0') + String(latSec).padStart(2, '0')
 	var lngstr = String(lngDeg).padStart(2, '0') + String(lngSec).padStart(2, '0')
 
@@ -259,15 +259,17 @@ window.onload = function () {
 						}
 					});
 				})
-			/*cookies_input.forEach(function(s){
+			cookies_input.forEach(function(s){
 				var v = getCookieValue(s);
 				if (!(v === "")){
 					self[s] = v
 				}
-			})*/
+			})
 		},
 		computed: {
-			displayMarkerPentad : function(){ return this.buttonDisplayMarkerPentad && this.regionType=="pentad" },
+			displayMarkerPentad: function () {
+				return this.buttonDisplayMarkerPentad && this.regionType == "pentad"
+			},
 			rectangle_pentad: function () {
 				var lng = this.marker_pentad.position.lng;
 				var lat = this.marker_pentad.position.lat;
@@ -310,10 +312,10 @@ window.onload = function () {
 						url += this.innerText
 					}
 				})
-				return url.replace(/ /g, '').replace(/\r?\n|\r/g, '').replace('null').replace(/\/$/, "")
-				/*cookies_input.forEach(function(s){
+				cookies_input.forEach(function(s){
 					document.cookie= s + "=" + encodeURIComponent(app[s]) + ";" + expires + ";path=/";
-				})*/
+				})
+				return url.replace(/ /g, '').replace(/\r?\n|\r/g, '').replace('null').replace(/\/$/, "")
 			},
 			exportURL: function (type, e) {
 				console.log(app.url())
@@ -327,9 +329,8 @@ window.onload = function () {
 			},
 			exportMap: function (e) {
 				console.log(app.url())
-				jQuery(e.target).html('<i class="fa fa-spinner fa-spin"></i> Loading')
+				jQuery("#btn-download").html('<i class="fa fa-spinner fa-spin"></i> Loading')
 				jQuery.getJSON(app.url() + '?format=geoJSON', function (data) {
-
 						if (data.type == "FeatureCollection") {
 							app.geojson = data
 						} else if (data.meta.call.includes("cards/species/0/")) {
@@ -429,14 +430,12 @@ window.onload = function () {
 								}, [])
 							}
 						}
-
-						jQuery(e.target).html('<i class="fas fa-globe"></i> Map')
-
+						jQuery("#btn-download").html('<i class="fas fa-globe-africa"></i> Map')
 					})
 					.fail(function (jqxhr, textStatus, error) {
-						jQuery(e.target).html('<i class="fas fa-globe"></i> Map')
+						jQuery("#btn-download").html('<i class="fas fa-globe-africa"></i> Map')
 						var err = textStatus + ", " + error;
-						alert("Request Failed: " + err + '<br>Check that the url is valid and that the key is added.');
+						alert("Request Failed: " + err + '<br>Check that the url is valid.');
 					});
 			}
 		}
