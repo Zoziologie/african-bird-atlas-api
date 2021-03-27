@@ -29,6 +29,7 @@ function pentad2latlng(p) {
 }
 
 function latlng2pentad(lat, lng) {
+
 	if (lat < 0 & lng > 0) {
 		letter = '_'
 	} else if (lat < 0 & lng < 0) {
@@ -39,16 +40,14 @@ function latlng2pentad(lat, lng) {
 		letter = 'c'
 	}
 
-	var latstr = (Math.floor(Math.abs(lat + 0.0001) / res) * res * 100).toLocaleString(undefined, {
-		minimumIntegerDigits: 4,
-		useGrouping: false,
-		maximumFractionDigits: 0
-	})
-	var lngstr = (Math.floor(Math.abs(lng + 0.0001) / res) * res * 100).toLocaleString(undefined, {
-		minimumIntegerDigits: 4,
-		useGrouping: false,
-		maximumFractionDigits: 0
-	})
+	lat = Math.abs(lat + 0.0001);
+	lng = Math.abs(lng + 0.0001);
+	var latDeg = Math.floor(lat);
+	var lngDeg = Math.floor(lng);
+	var latSec = Math.floor((lat-latDeg)*60/5)*5
+	var lngSec = Math.floor((lng-lngDeg)*60/5)*5
+	var latstr = String(latDeg).padStart(2, '0') + String(latSec).padStart(2, '0')
+	var lngstr = String(lngDeg).padStart(2, '0') + String(lngSec).padStart(2, '0')
 
 	return latstr + letter + lngstr
 
