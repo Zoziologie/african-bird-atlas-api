@@ -1,25 +1,22 @@
 {
 	"R": {
 		"items":["date","region","filter"],
-		"parms":["format","first"],
-		"map": true
+		"format":["csv","json","map"]
 		},
 	"summary":{
 		"items":["species","region"],
-		"parms":["format"],
-		"map": true
+		"format":["json2csv","json","map"]
 		},
 	"coverage":{
 		"items":["region"],
-		"parms":["format","first"],
-		"map": false
+		"format":["json2csv","json"]
 		},
 	"card":{
 		"items":["cardNo"],
-		"map": true
+		"format":["json2csv","json","map"]
 		},
 	"cards":{
 		"items":["species"],
-		"map": true
+		"format":["json2csv","json","map"]
 	}
 }

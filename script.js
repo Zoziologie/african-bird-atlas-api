@@ -50,7 +50,25 @@ function latlng2pentad(lat, lng) {
 	var lngstr = String(lngDeg).padStart(2, '0') + String(lngSec).padStart(2, '0')
 
 	return latstr + letter + lngstr
+}
 
+function json2csv(json, filename){
+	
+	const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
+	const header = Object.keys(json[0])
+	const csv = [
+	header.join(','), // header row first
+	...json.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
+	].join('\r\n')
+
+	console.log(csv)
+
+	var encodedUri = encodeURI("data:text/csv;charset=utf-8,"+csv);
+	var link = document.createElement("a");
+	link.setAttribute("href", encodedUri);
+	link.setAttribute("download", filename);
+	document.body.appendChild(link); // Required for FF
+	link.click(); // This will download the data file named "my_data.csv".
 }
 
 window.onload = function () {
@@ -81,7 +99,6 @@ window.onload = function () {
 			enddate: "2025-01-01",
 			cardNo: "3325_1825_000228_20180922",
 			regionProvince: "",
-			format: "json",
 			first: "",
 			groups: [{
 				label: "Aberdare Range",
@@ -288,7 +305,10 @@ window.onload = function () {
 			},
 			clayer: function () {
 				if (Object.keys(this.structure).length == 0) {
-					return []
+					return {
+						"items":[],
+						"format":[]
+						}
 				} else {
 					var tmp = this.structure[this.base];
 					return (typeof tmp == 'undefined') ? [] : tmp
@@ -326,6 +346,53 @@ window.onload = function () {
 				} else if (type == 'togeoJSON') {
 					window.open(app.url() + '?format=geoJSON');
 				}
+			},
+			json2csv : function(e) {
+				console.log(app.url())
+				$.getJSON(app.url() + '?format=JSON', function (data) {
+					if (data.meta.call.includes("cards/species/0/")){
+						var json = data.data.cards.map( card => {
+							card={...card, ...card.record[0]}
+							delete card.records;
+							return card
+						})
+						json2csv(json, "export_cards_"+app.speciesCode+".csv")
+					} else if (data.meta.call.includes("card/full/0/")){
+						card = data.data.cards[0]
+						cardNew = {...card , ...card.species_summary[0], ...card.pentad_info[0]}
+						delete cardNew.species_summary;
+						delete cardNew.pentad_info
+						delete cardNew.observers
+						delete cardNew.records
+						var json = data.data.cards[0].records.map( r => {
+							return {...r, ...cardNew}
+						})
+						json2csv(json, "export_card_"+app.cardNo+".csv")
+					} else if (data.meta.call.includes("coverage/")){
+						json2csv(observers = data.data.observers, "export_coverage_"+app.regionCountry+"_observers.csv")
+						json2csv(data.data.coverage_summary, "export_coverage_"+app.regionCountry+"_summary.csv")
+						json2csv(data.data.species, "export_coverage_"+app.regionCountry+"_species.csv")
+					} else if (data.meta.call.includes("summary/")){
+						var pentad = [...data.data.full.map(x=>x.pentad), ...data.data.adhoc.map(x=>x.pentad)]
+						pentad = pentad.filter((v, i, a) => a.indexOf(v) === i);
+
+						json = pentad.map(item => {
+							var f = data.data.full.find(o => o.pentad === item)
+							var a = data.data.adhoc.find(o => o.pentad === item)
+							if (typeof f !== 'undefined'){
+								f.cards_full = f.cards
+								delete f.cards
+							}
+							if (typeof a !== 'undefined'){
+								a.cards_adhoc = a.cards
+								delete a.cards
+							}
+							return {...f , ...a };
+						});
+
+						json2csv(json, "export_summary_" + app.speciesCode + ".csv")
+					}
+				})
 			},
 			exportMap: function (e) {
 				console.log(app.url())
@@ -408,6 +475,8 @@ window.onload = function () {
 											"type": "Feature",
 											"properties": {
 												"pentad": c.Pentad,
+												"name": c.Pentad,
+												"popupContent": c.Pentad,
 												"card": [
 													pp
 												]
@@ -426,6 +495,7 @@ window.onload = function () {
 											}
 										})
 									}
+									
 									return acc
 								}, [])
 							}

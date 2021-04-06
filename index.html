@@ -89,7 +89,7 @@
 							<template v-else>
 								<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">species/</b-input-group-text></b-input-group-prepend>
 							</template>
-							<v-select taggable multiple v-model="speciesCode" label="label" :options="species" :reduce="e => e.code" required class="url-species"></v-select>
+							<v-select taggable v-model="speciesCode" label="label" :options="species" :reduce="e => e.code" required class="url-species"></v-select>
 							<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">/</b-input-group-text></b-input-group-prepend>
 						</template>
 						<template v-else-if="item === 'cardNo'">
@@ -98,15 +98,22 @@
 						</template>
 					</template>
 					<b-input-group-append>
-						<template v-if="clayer.map">
+						<template v-if="clayer.format.includes('map')">
 							<b-button variant="outline-secondary" v-on:click="exportMap($event)" id="btn-download"><i class="fas fa-globe-africa"></i> Map</b-button>
 						</template>
 						<b-dropdown variant="outline-secondary">
 							<template v-slot:button-content>
 								<i class='fas fa-download'></i> Download
 							</template>
-							<b-dropdown-item v-on:click="exportURL('toJSON',$event)">JSON</b-dropdown-item>
-							<b-dropdown-item v-on:click="exportURL('toCSV',$event)">CSV</b-dropdown-item>
+							<template v-if="clayer.format.includes('csv')">
+								<b-dropdown-item v-on:click="exportURL('toCSV',$event)">CSV</b-dropdown-item>
+							</template>
+							<template v-if="clayer.format.includes('json2csv')">
+								<b-dropdown-item v-on:click="json2csv($event)">CSV</b-dropdown-item>
+							</template>
+							<template v-if="clayer.format.includes('json')">
+								<b-dropdown-item v-on:click="exportURL('toJSON',$event)">JSON</b-dropdown-item>
+							</template>
 						</b-dropdown>
 					</b-input-group-append>
 				</b-input-group>
