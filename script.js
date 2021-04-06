@@ -282,6 +282,11 @@ window.onload = function () {
 					self[s] = v
 				}
 			})
+			var url = new URLSearchParams(window.location.href);
+			url.forEach( (val,key) => {
+				self[key] = val
+			});
+
 		},
 		computed: {
 			displayMarkerPentad: function () {
@@ -336,6 +341,18 @@ window.onload = function () {
 					document.cookie= s + "=" + encodeURIComponent(app[s]) + ";" + expires + ";path=/";
 				})
 				return url.replace(/ /g, '').replace(/\r?\n|\r/g, '').replace('null').replace(/\/$/, "")
+			},
+			copyURL: function(){
+				let extension = cookies_input.reduce((ac,s) => {
+					return ac + "&" + s + "=" + encodeURIComponent(app[s]) ;
+				},"")
+				var textArea = document.createElement("textarea");
+				textArea.value = window.location.origin+window.location.pathname+'?'+extension;
+				document.body.appendChild(textArea);
+				textArea.focus();
+				textArea.select();
+				document.execCommand('copy');
+				document.body.removeChild(textArea);
 			},
 			exportURL: function (type, e) {
 				console.log(app.url())

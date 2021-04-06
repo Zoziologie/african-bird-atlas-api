@@ -32,6 +32,9 @@
 						<b-button variant="outline-secondary"  onclick="window.open('http://api.adu.org.za/sabap2/v2/');">
 							<i class="fas fa-info"></i>
 						</b-button>
+						<b-button v-b-tooltip.click title="Copy to clipboard" variant="outline-secondary"  v-on:click="copyURL()">
+							<i class="fas fa-link"></i>
+						</b-button>
 						<!--<b-button variant="outline-secondary" v-b-toggle.sidebar-1><i class="fas fa-wrench"></i></b-button>-->
 						<b-input-group-text variant="outline-secondary">http://api.adu.org.za/sabap2/v2/</b-input-group-text>
 					</b-input-group-prepend>
