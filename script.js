@@ -369,7 +369,7 @@ window.onload = function () {
 				$.getJSON(app.url() + '?format=JSON', function (data) {
 					if (data.meta.call.includes("cards/species/0/")){
 						var json = data.data.cards.map( card => {
-							card={...card, ...card.record[0]}
+							card={...card, ...card.records[0]}
 							delete card.records;
 							return card
 						})
