@@ -75,8 +75,8 @@
 							</template>
 						</template>
 						<template v-else-if="item === 'filter'">
-							<b-form-select v-model="filterType" :options="['','/observer','/species']" required class="url-val"></b-form-select>
-							<template v-if="filterType === '/observer'">
+							<b-form-select v-model="filterType" :options="['','/observers','/species']" required class="url-val"></b-form-select>
+							<template v-if="filterType === '/observers'">
 								<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">/</b-input-group-text></b-input-group-prepend>
 								<b-form-input v-model="filterObserver" type="text" required class="url-val"></b-form-input>
 							</template>
