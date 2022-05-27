@@ -46,7 +46,7 @@
 							<i class="fas fa-link"></i>
 						</b-button>
 						<!--<b-button variant="outline-secondary" v-b-toggle.sidebar-1><i class="fas fa-wrench"></i></b-button>-->
-						<b-input-group-text variant="outline-secondary">http://api.adu.org.za/sabap2/v2/</b-input-group-text>
+						<b-input-group-text variant="outline-secondary">https://api.birdmap.africa/sabap2/v2/</b-input-group-text>
 					</b-input-group-prepend>
 					<b-form-select v-model="base" :options="base_opts" required class="url-val" width=></b-form-select>
 					<b-input-group-prepend class="url-innertext"><b-input-group-text variant="outline-secondary">/</b-input-group-text></b-input-group-prepend>
@@ -133,7 +133,7 @@
 			</b-col>
 		</b-row>
 		<b-row class="h-100">
-			<b-col class="h-100">
+			<b-col class="h-100 pb-3">
 				<l-map :bounds="bounds">
 					<l-tile-layer :url="lurl"></l-tile-layer>
 					<l-marker :lat-lng.sync="marker_pentad.position" :draggable="true" :visible="displayMarkerPentad"></l-marker>
@@ -147,7 +147,7 @@
 				<b-button-group>
 					<b-button variant="light" href="https://github.com/Zoziologie/Map-African-Bird-Map-API"><i class="fab fa-github"></i> Github</b-button>
 					<b-button variant="light" href="https://zoziologie.raphaelnussbaumer.com/"><b-img src="/assets/logo.png" height=16></b-img> Zoziology</b-button>
-					<b-button variant="light" href="http://kenya.birdmap.africa/"><b-img src="http://kenyabirdmap.adu.org.za/images/kbm.ico" height=16></b-img> Kenya Bird Map</b-button>
+					<b-button variant="light" href="http://kenya.birdmap.africa/"><b-img src="https://kenya.birdmap.africa/img/ico/favicon-16x16.png" height=16></b-img> Kenya Bird Map</b-button>
 					<b-button variant="light" href="https://www.arocha.or.ke/"><b-img src="https://avatars0.githubusercontent.com/u/64659171?s=16&v=4"></b-img> A Rocha Kenya</b-button>
 				  </b-button-group>
 				<a ></a>
